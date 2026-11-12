@@ -1,0 +1,27 @@
+{
+  "dataset_id": "synthetic-demo-v1",
+  "currency": "USD",
+  "period": "one month",
+  "products": [
+    {
+      "product_id": "demo_330ml_6pk",
+      "name": "Demo beverage 330 ml x 6",
+      "baseline_price": 10.0,
+      "baseline_units": 10000.0,
+      "unit_cost": 6.0,
+      "elasticity": -1.5,
+      "min_price_ratio": 0.85,
+      "max_price_ratio": 1.15
+    },
+    {
+      "product_id": "demo_500ml_4pk",
+      "name": "Demo beverage 500 ml x 4",
+      "baseline_price": 12.0,
+      "baseline_units": 7000.0,
+      "unit_cost": 7.0,
+      "elasticity": -1.2,
+      "min_price_ratio": 0.9,
+      "max_price_ratio": 1.1
+    }
+  ]
+}

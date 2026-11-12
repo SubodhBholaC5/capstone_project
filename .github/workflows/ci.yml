@@ -1,0 +1,16 @@
+name: Python checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen --python 3.12
+      - run: uv run black --check src tests
+      - run: uv run isort --check-only src tests
+      - run: uv run mypy
+      - run: uv run pytest
