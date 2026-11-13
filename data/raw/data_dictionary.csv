@@ -1,0 +1,41 @@
+﻿table,field,data_type,unit,nullable,description,example
+master,record_id,str,,False,Unique product_id + month; master primary key.,"""SKU001_north_general_trade_2025-11"""
+master,dataset_id,str,,False,Versioned synthetic data identifier.,"""synthetic-cpg-price-pack-v1"""
+master,month,str,,False,"Baseline calendar month, YYYY-MM. Never sum repeated monthly prices.","""2025-11"""
+master,sku_id,str,,False,Physical fixed-pack SKU; 25 distinct SKUs.,"""SKU001"""
+master,product_id,str,,False,SKU + region + channel. Unique within each month; joins active catalog to October master rows.,"""SKU001_north_general_trade"""
+master,category,str,,False,Synthetic CPG category.,"""Sparkling beverage"""
+master,brand,str,,False,Fictional brand; no actual company data.,"""Fizora"""
+master,product_name,str,,False,Readable brand and fixed pack format.,"""Fizora 250ml x1"""
+master,region,str,,False,Synthetic Indian sales region.,"""North"""
+master,channel,str,,False,Sales channel; wholesale/general_trade/modern_trade/ecommerce.,"""general_trade"""
+master,currency,str,,False,"INR, Indian rupees.","""INR"""
+master,pack_size,int,,False,Size of ONE inner unit; multiply by units_per_pack for total pack content.,250
+master,pack_uom,str,,False,g for weight or ml for volume. Do not sum unlike units.,"""ml"""
+master,units_per_pack,int,,False,Number of inner units sold together; one baseline unit means one complete pack.,1
+master,baseline_price,float,INR/pack,False,"Manufacturer net realized INR per complete pack, excluding taxes; strictly positive.",20.6
+master,baseline_units,int,packs/month,False,Synthetic packs sold in the row's month; strictly positive integer.,6644
+master,unit_cost,float,INR/pack,False,Variable COGS INR per complete pack; fixed during simulation; excludes overhead and tax.,11.2
+master,elasticity,float,dimensionless,False,"Assumed own-price exponent, negative; not estimated from generated monthly data.",-1.766
+master,min_price_ratio,float,ratio,False,"Inclusive minimum proposed price / baseline price; 0.80, 0.85 or 0.90.",0.85
+master,max_price_ratio,float,ratio,False,"Inclusive maximum proposed price / baseline price; 1.10, 1.15 or 1.20.",1.15
+master,min_supported_price,float,INR/pack,False,"baseline_price * min_price_ratio, INR/pack. Full precision defines acceptance.",17.51
+master,max_supported_price,float,INR/pack,False,"baseline_price * max_price_ratio, INR/pack. Full precision defines acceptance.",23.69
+master,baseline_revenue,float,INR/month,False,"baseline_price * baseline_units, INR/month, rounded to 2 decimals.",136866.4
+master,baseline_gross_profit,float,INR/month,False,"(baseline_price - unit_cost) * baseline_units, INR/month; rounded to 2 decimals.",62453.6
+master,baseline_margin_pct,float,percentage points,False,"100 * baseline_gross_profit / baseline_revenue, percentage points (25 means 25%).",45.63106796116505
+master,calibration_observations,int,,False,Fabricated observation count for metadata demonstration; not actual estimation evidence.,113
+master,elasticity_standard_error,float,,False,Fabricated standard error metadata; not used by simulator or evidence of validity.,0.26
+master,synthetic,bool,,False,Always true. All records and calibration values are fabricated.,true
+golden_questions,question_id,str,,False,Golden-set primary key Q001-Q100.,"""Q001"""
+golden_questions,persona,str,,False,"Intended business user; 10 personas, 10 questions each.","""Revenue Growth Manager"""
+golden_questions,case_type,str,,False,"Evaluation intent: ordinary price, boundary, comparison, refusal, clarification or unsupported operation.","""percentage_price"""
+golden_questions,split,str,,False,20 validation and 80 test questions. Template families overlap; not an independent generalization benchmark.,"""validation"""
+golden_questions,catalog_dataset_id,str,,False,Required active catalog dataset_id; also check catalog SHA256 in manifest.,"""synthetic-cpg-price-pack-v1"""
+golden_questions,question,str,,False,User utterance sent to copilot; catalog must be available as context.,"""For SKU001_north_general_trade, change the baseline price by -5% and round the proposed price to two decimals before simulation. Hold the pack fixed; show unit"
+golden_questions,expected_action,str,,False,"call_tool, clarify, or explain_unsupported.","""call_tool"""
+golden_questions,expected_tool_calls,list,,False,"JSON array; name=compare_scenarios, arguments.scenarios=[{label, product_id, price}]. Empty means no call.","[{""name"": ""compare_scenarios"", ""arguments"": {""scenarios"": [{""label"": ""Candidate"", ""product_id"": ""SKU001_north_general_trade"", ""price"": 20.43}]}}]"
+golden_questions,expected_result,dict,,True,Exact application comparison excluding nondeterministic timing fields; null for no-tool cases.,"{""dataset_id"": ""synthetic-cpg-price-pack-v1"", ""currency"": ""INR"", ""period"": ""2026-10 (one month)"", ""baselines"": [{""label"": ""Baseline"", ""product_id"": ""SKU001_nort"
+golden_questions,expected_answer,str,,False,Human-readable rounded answer; machine scoring must use expected_result for full precision.,"""Candidate: 1121.53 packs; revenue INR 22912.76; gross profit INR 6695.50; margin 29.2217%; gross profit delta INR -523.70."""
+golden_questions,required_assumptions,list,,False,Six simulator assumption strings required semantically in explanation; empty for no-tool cases.,"[""Synthetic demonstration calibration; not a validated demand forecast."", ""Units = baseline units * (price / baseline price) ** own-price elasticity."", ""Pack si"
+golden_questions,scoring_notes,str,,False,Argument and semantic scoring guidance; full method in README.,"""Ignore labels and JSON key order; preserve scenario order, product_id and price. See README tolerances."""
